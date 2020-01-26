@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-
+const path = require("path");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
@@ -28,9 +28,9 @@ app.get("/scrape",(req, res) => {
             result.summary = $(element)
             .find("h4")
             .text();
-            result.link = `https://www.infoworld.com/${$(this)
+            result.link = $(element)
             .find("a")
-            .attr("href")}`;
+            .attr("href");
 
             // console.log(result); 
             db.Article.create(result)
@@ -42,8 +42,17 @@ app.get("/scrape",(req, res) => {
             })
         })
         
-
         res.send("Scrape Complete");
+    });
+});
+
+app.get("/articles",(req, res) => {
+    db.Article.find({})
+    .then((dbArticle) => {
+        res.json(dbArticle);
+    })
+    .catch((err) => {
+        res.json(err);
     });
 });
 
