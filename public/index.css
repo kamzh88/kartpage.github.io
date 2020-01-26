@@ -1,0 +1,15 @@
+body { 
+    background-color: #F2F6D0; 
+}
+
+#articles{
+   height: 50rem;
+    overflow-y: scroll;
+}
+
+.noteCSS{
+    margin-top: 10%;
+    margin-bottom: 10%;
+    position: relative;
+    float: right;
+}
