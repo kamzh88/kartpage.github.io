@@ -35,7 +35,7 @@ app.get("/scrape",(req, res) => {
             // console.log(result); 
             db.Article.create(result)
             .then(dbArticle => {
-                console.log(dbArticle);
+                // console.log(dbArticle);
             })
             .catch(err => {
                 console.log(err);
@@ -55,6 +55,23 @@ app.get("/articles",(req, res) => {
         res.json(err);
     });
 });
+
+app.delete("/articles", (req,res) => {
+    db.Article.deleteMany({})
+    .then(dbArticle => {
+        res.json(dbArticle);
+    })
+    .catch(err => {
+        res.json(err);
+    });
+});
+
+// app.post("/articles/:id", (req,res) => {
+//     db.Note.create(req.body)
+//     .then(dbNote => {
+
+//     })
+// })
 
 app.listen(PORT,()=>{
     console.log("App running on port " + PORT + "!");
