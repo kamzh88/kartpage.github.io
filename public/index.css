@@ -13,3 +13,7 @@ body {
     margin-bottom: 10%;
     position: relative;
 }
+
+.titleCSS{
+    font-weight: bold;
+}
