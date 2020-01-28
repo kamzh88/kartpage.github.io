@@ -2,7 +2,7 @@ body {
     background-color: #F2F6D0; 
 }
 
-#articles{
+.accordion{
     height: 50rem;
     overflow-y: scroll;
 }
