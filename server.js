@@ -15,76 +15,82 @@ app.use(express.json());
 app.use(express.static("public"));
 
 mongoose.connect("mongodb://localhost/newsletter", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/newsletter", { useFindAndModify: false });
 
-app.get("/scrape",(req, res) => {
+app.get("/scrape", (req, res) => {
     axios.get("https://www.infoworld.com/category/javascript/").then(function (response) {
         const $ = cheerio.load(response.data);
-        
+
         $(".article").each((i, element) => {
             const result = {};
             result.title = $(element)
-            .find("h3")
-            .text();
+                .find("h3")
+                .text();
             result.summary = $(element)
-            .find("h4")
-            .text();
+                .find("h4")
+                .text();
             result.link = $(element)
-            .find("a")
-            .attr("href");
+                .find("a")
+                .attr("href");
 
             // console.log(result); 
             db.Article.create(result)
-            .then(dbArticle => {
-                // console.log(dbArticle);
-            })
-            .catch(err => {
-                console.log(err);
-            })
+                .then(dbArticle => {
+                    // console.log(dbArticle);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         })
-        
+
         res.send("Scrape Complete");
     });
 });
 
-app.get("/articles",(req, res) => {
+app.get("/articles", (req, res) => {
     db.Article.find({})
-    .then((dbArticle) => {
-        res.json(dbArticle);
-    })
-    .catch((err) => {
-        res.json(err);
-    });
+        .then((dbArticle) => {
+            res.json(dbArticle);
+        })
+        .catch((err) => {
+            res.json(err);
+        });
 });
 
 app.get('/articles/:id', (req, res) => {
-    db.Article.findOne({ _id: req.params.id})
-    .populate("note")
-    .then((dbArticle) => {
-        res.json(dbArticle);
-        
-    })
-    .catch((err) => {
-        res.json(err);
-    });
+    db.Article.findOne({ _id: req.params.id })
+        .populate("note")
+        .then((dbArticle) => {
+            res.json(dbArticle);
+
+        })
+        .catch((err) => {
+            res.json(err);
+        });
 });
 
-app.delete("/articles", (req,res) => {
+app.delete("/articles", (req, res) => {
     db.Article.deleteMany({})
-    .then(dbArticle => {
-        res.json(dbArticle);
-    })
-    .catch(err => {
-        res.json(err);
-    });
+        .then(dbArticle => {
+            res.json(dbArticle);
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
-// app.post("/articles/:id", (req,res) => {
-//     db.Note.create(req.body)
-//     .then(dbNote => {
-
-//     })
-// })
-
-app.listen(PORT,()=>{
+app.post("/articles/:id", (req, res) => {
+    db.Note.create(req.body)
+        .then(dbNote => {
+            return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+        })
+        .then(dbArticle => {
+            res.json(dbArticle);
+        })
+        .catch(err => {
+            res.json(err);
+        })
+})
+app.listen(PORT, () => {
     console.log("App running on port " + PORT + "!");
 });
