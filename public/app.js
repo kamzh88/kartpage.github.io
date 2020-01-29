@@ -42,14 +42,32 @@ $(document).ready(() => {
             </div>
             <button type="submit"  value="Submit">Submit</button>
         </form>
-        <div class="note-body">All Notes</div>
+        <br>
+        <div class="note-body">All Notes<br><br></div>
         `);
         $.ajax({
             method: "GET",
             url: "/articles/" + thisID
-        }).then(data => {
-            console.log(data);
-        })
+        }).then(data => getNotesData(data))
+            .catch(err => console.log(err));
+
+        const getNotesData = (data) => {
+
+            console.log(data.note);
+            data = data.note.map(response => {
+                return {
+                    title: response.title,
+                    body: response.body
+                }
+            });
+            data.forEach(dataComment => {
+                $(".note-body").append(`
+                Title: ${dataComment.title}<br> 
+                Comment: ${dataComment.body}<br><br>
+                `);
+            });
+        }
+
     });
 
     $(document).on("submit", `.saveNote`, (event) => {

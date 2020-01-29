@@ -80,12 +80,15 @@ app.delete("/articles", (req, res) => {
 });
 
 app.post("/articles/:id", (req, res) => {
+    console.log(req.params._id);
     db.Note.create(req.body)
         .then(dbNote => {
-            return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+            // console.log(dbNote._id);
+            return db.Article.findOneAndUpdate({_id: req.params.id}, { $push: { note: dbNote._id }  }, { new: true });
         })
         .then(dbArticle => {
             res.json(dbArticle);
+            // console.log(dbArticle);
         })
         .catch(err => {
             res.json(err);
