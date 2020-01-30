@@ -18,7 +18,13 @@ mongoose.connect("mongodb://localhost/newsletter", { useNewUrlParser: true });
 mongoose.connect("mongodb://localhost/newsletter", { useFindAndModify: false });
 
 app.get("/scrape", (req, res) => {
-    axios.get("https://www.infoworld.com/category/javascript/").then(function (response) {
+
+    axios.get("https://www.infoworld.com/category/javascript/")
+        .then(response => articles(response))
+        .catch(err => console.log(err));
+
+    const articles = (response) => {
+        const resultArray = [];
         const $ = cheerio.load(response.data);
 
         $(".article").each((i, element) => {
@@ -32,19 +38,22 @@ app.get("/scrape", (req, res) => {
             result.link = $(element)
                 .find("a")
                 .attr("href");
+            resultArray.push(result);
+        });
 
-            // console.log(result); 
-            db.Article.create(result)
-                .then(dbArticle => {
-                    // console.log(dbArticle);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-        })
+        for (let i = 0; i < resultArray.length; i++) {
+            let linkArray = resultArray[i].link;
+            let titleArray = resultArray[i].title;
+            let summary = resultArray[i].summary;
 
-        res.send("Scrape Complete");
-    });
+            if (linkArray && titleArray && summary) {
+                db.Article.findOneAndUpdate({ title: titleArray, summary: summary, link: linkArray }, { $set: resultArray }, { upsert: true }).catch(
+                    err => res.send(err)
+                );
+            }
+        }
+    }
+    res.send("Scrape Complete");
 });
 
 app.get("/articles", (req, res) => {
@@ -80,20 +89,18 @@ app.delete("/articles", (req, res) => {
 });
 
 app.post("/articles/:id", (req, res) => {
-    console.log(req.params._id);
     db.Note.create(req.body)
         .then(dbNote => {
-            // console.log(dbNote._id);
-            return db.Article.findOneAndUpdate({_id: req.params.id}, { $push: { note: dbNote._id }  }, { new: true });
+            return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { note: dbNote._id } }, { new: true });
         })
         .then(dbArticle => {
             res.json(dbArticle);
-            // console.log(dbArticle);
         })
         .catch(err => {
             res.json(err);
-        })
-})
+        });
+});
+
 app.listen(PORT, () => {
     console.log("App running on port " + PORT + "!");
 });

@@ -1,34 +1,37 @@
 $(document).ready(() => {
 
-    $(document).on("click", ".scrape", (event) => {
+    $(document).on("click", ".scraped", (event) => {
         $(".accordion").empty();
+        $.ajax('/scrape', {
+            type: "GET",
+        }).then((result) => {
+            console.log(result);
+        }).catch(err => console.log(err));
+        
         $.getJSON("/articles", data => {
             const articles = $(".accordion");
-            // console.log(data);
             for (let i = 0; i < data.length; i++) {
-                articles.append(`
+                articles.prepend(`
                     <div class="card-header" id="heading${i}>
                         <h2 class="mb-0">
-                            <button class="btn btn-link titleCSS" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">${data[i].title.trim()}</button>
+                            <button class="btn btn-link titleCSS" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">${data[i].title}</button>
                         </h2>
                     </div>
                     <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
                         <div class="card-body">
-                            ${data[i].summary.trim()}<br><br>
+                            ${data[i].summary}<br><br>
                             <a href='https://www.infoworld.com${data[i].link}'>Article Link</a>
                             <button data-id=${data[i]._id} class="add-notes">Comments</button><br>
-                        </div>
-                            
+                        </div>    
                     </div>
                 `);
             }
-        });
+        }).catch(err => console.log(err));
     });
 
     $(document).on("click", `.add-notes`, (event) => {
         $(".note").empty();
         const thisID = $(event.target)[0].dataset.id;
-        console.log(thisID);
         const noteDiv = $(".note");
         noteDiv.append(`
         <form class="saveNote" data-id="${thisID}">                
@@ -53,7 +56,6 @@ $(document).ready(() => {
 
         const getNotesData = (data) => {
 
-            console.log(data.note);
             data = data.note.map(response => {
                 return {
                     title: response.title,
@@ -67,7 +69,6 @@ $(document).ready(() => {
                 `);
             });
         }
-
     });
 
     $(document).on("submit", `.saveNote`, (event) => {
@@ -80,7 +81,6 @@ $(document).ready(() => {
                 body: $("#note-input").val()
             }
         }).then(data => {
-            console.log("comment saved");
-        })
+        }).catch(err => console.log(err));
     });
 });
