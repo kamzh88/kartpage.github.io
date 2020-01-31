@@ -45,7 +45,6 @@ app.get("/scrape", (req, res) => {
             }
             
         });
-
         res.send("Scrape Complete");
     }
 });

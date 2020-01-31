@@ -25,10 +25,7 @@ $(document).ready(() => {
         $.ajax('/scrape', {
             type: "GET",
         }).then((result) => {
-            console.log("scrape complete")
             $.getJSON("/articles", data => {
-                console.log("Done");
-                console.log(data);
                 $(".accordion").empty();
                 const articles = $(".accordion");
                 for (let i = 0; i < data.length; i++) {
@@ -49,8 +46,6 @@ $(document).ready(() => {
                 }
             }).catch(err => console.log(err));
         }).catch(err => console.log(err));
-
-        
     });
 
     $(document).on("click", `.titleCSS`, (event) => {
@@ -74,7 +69,10 @@ $(document).ready(() => {
             <button type="submit"  value="Submit">Submit</button>
         </form>
         <br>
-        <div class="note-body">All Notes<br><br></div>
+        <div class="note-body">
+            <div class="headingCSS">
+                <span class="notesCSS">All Notes</span><br><br></div>
+            </div>
         `);
         $.ajax({
             method: "GET",
@@ -92,8 +90,8 @@ $(document).ready(() => {
             });
             data.forEach(dataComment => {
                 $(".note-body").append(`
-                Title: ${dataComment.title}<br> 
-                Comment: ${dataComment.body}<br><br>
+                <span class="titleCSS">Title:</span> ${dataComment.title}<br> 
+                <span class="titleCSS">Comment:</span> ${dataComment.body}<br><br>
                 `);
             });
         }

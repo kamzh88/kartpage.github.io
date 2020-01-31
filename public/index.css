@@ -12,6 +12,12 @@ body {
     overflow-y: scroll;
 }
 
+.headingCSS{
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
 .noteCSS{
     width: 90%;
     margin-bottom: 10%;
