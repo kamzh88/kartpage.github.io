@@ -71,7 +71,6 @@ app.get('/articles/:id', (req, res) => {
         .populate("note")
         .then((dbArticle) => {
             res.json(dbArticle);
-
         })
         .catch((err) => {
             res.json(err);

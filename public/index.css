@@ -2,6 +2,11 @@ body {
     background-color: #F2F6D0; 
 }
 
+.jumbotron {
+    background-color: #F2F6D0;
+    height: 2rem;
+}
+
 .accordion{
     height: 50rem;
     overflow-y: scroll;
@@ -16,3 +21,19 @@ body {
 .titleCSS{
     font-weight: bold;
 }
+
+.scraped,
+.add-notes {     
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;   
+    color: #007bff;     
+}
+
+.buttonCSS {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
