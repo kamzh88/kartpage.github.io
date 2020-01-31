@@ -24,7 +24,6 @@ app.get("/scrape", (req, res) => {
         .catch(err => console.log(err));
 
     const articles = (response) => {
-        const resultArray = [];
         const $ = cheerio.load(response.data);
 
         $(".article").each((i, element) => {
@@ -38,22 +37,17 @@ app.get("/scrape", (req, res) => {
             result.link = $(element)
                 .find("a")
                 .attr("href");
-            resultArray.push(result);
-        });
 
-        for (let i = 0; i < resultArray.length; i++) {
-            let linkArray = resultArray[i].link;
-            let titleArray = resultArray[i].title;
-            let summary = resultArray[i].summary;
-
-            if (linkArray && titleArray && summary) {
-                db.Article.findOneAndUpdate({ title: titleArray, summary: summary, link: linkArray }, { $set: resultArray }, { upsert: true }).catch(
+            if (result.link && result.title && result.summary) {
+                db.Article.findOneAndUpdate({ title: result.title, summary: result.summary, link: result.link }, { $set: result }, { upsert: true }).catch(
                     err => res.send(err)
                 );
             }
-        }
+            
+        });
+
+        res.send("Scrape Complete");
     }
-    res.send("Scrape Complete");
 });
 
 app.get("/articles", (req, res) => {

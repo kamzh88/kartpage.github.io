@@ -21,32 +21,36 @@ $(document).ready(() => {
     }).catch(err => console.log(err));
 
     $(document).on("click", ".scraped", (event) => {
-        $(".accordion").empty();
+       
         $.ajax('/scrape', {
             type: "GET",
         }).then((result) => {
-
+            console.log("scrape complete")
+            $.getJSON("/articles", data => {
+                console.log("Done");
+                console.log(data);
+                $(".accordion").empty();
+                const articles = $(".accordion");
+                for (let i = 0; i < data.length; i++) {
+                    articles.prepend(`
+                    <div class="card-header" id="heading${i}>
+                        <h2 class="mb-0">
+                            <button class="btn btn-link titleCSS" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">${data[i].title}</button>
+                        </h2>
+                    </div>
+                    <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
+                        <div class="card-body">
+                            ${data[i].summary}<br><br>
+                            <a href='https://www.infoworld.com${data[i].link}'>Article Link</a>
+                            <button data-id=${data[i]._id} class="add-notes">Comments</button><br>
+                        </div>    
+                    </div>
+                `);
+                }
+            }).catch(err => console.log(err));
         }).catch(err => console.log(err));
 
-        $.getJSON("/articles", data => {
-            const articles = $(".accordion");
-            for (let i = 0; i < data.length; i++) {
-                articles.prepend(`
-                <div class="card-header" id="heading${i}>
-                    <h2 class="mb-0">
-                        <button class="btn btn-link titleCSS" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">${data[i].title}</button>
-                    </h2>
-                </div>
-                <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
-                    <div class="card-body">
-                        ${data[i].summary}<br><br>
-                        <a href='https://www.infoworld.com${data[i].link}'>Article Link</a>
-                        <button data-id=${data[i]._id} class="add-notes">Comments</button><br>
-                    </div>    
-                </div>
-            `);
-            }
-        }).catch(err => console.log(err));
+        
     });
 
     $(document).on("click", `.titleCSS`, (event) => {
