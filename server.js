@@ -6,7 +6,7 @@ const cheerio = require("cheerio");
 
 const db = require("./models");
 
-const PORT = 3000;
+const PORT = process.env.MONGODB_URI || 3000 ;
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://user:password1@ds129098.mlab.com:29098/heroku_hxdh4c6z";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://user:password1@ds129098.mlab.com:29098/heroku_hxdh4c6z";
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 mongoose.connect(MONGODB_URI, { useFindAndModify: false });
 
@@ -44,7 +44,7 @@ app.get("/scrape", (req, res) => {
                     err => res.send(err)
                 );
             }
-            
+
         });
         res.send("Scrape Complete");
     }
