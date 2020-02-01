@@ -14,9 +14,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://user:password1@ds129098.mlab.com:29098/heroku_hxdh4c6z";
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
-mongoose.connect(MONGODB_URI, { useFindAndModify: false });
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGODB_URI || "mongodb://user:password1@ds129098.mlab.com:29098/heroku_hxdh4c6z", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://user:password1@ds129098.mlab.com:29098/heroku_hxdh4c6z", { useFindAndModify: false });
 
 app.get("/", function (req, res) {
     res.render('index');
