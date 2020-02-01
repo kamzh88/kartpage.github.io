@@ -6,7 +6,7 @@ const cheerio = require("cheerio");
 
 const db = require("./models");
 
-const PORT = process.env.MONGODB_URI || 3000;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
