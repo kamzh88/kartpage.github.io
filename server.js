@@ -14,8 +14,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/newsletter", { useNewUrlParser: true });
-mongoose.connect("mongodb://localhost/newsletter", { useFindAndModify: false });
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsletter";
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useFindAndModify: false });
 
 app.get("/scrape", (req, res) => {
 
